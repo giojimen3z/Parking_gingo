@@ -1,0 +1,108 @@
+openapi: 3.0.0
+info:
+  title: Parqueadero API
+  version: 1.0.0
+  description: API para gestionar un parqueadero
+servers:
+  - url: http://localhost:8080
+paths:
+  /vehicles:
+    get:
+      summary: Listar todos los vehículos
+      responses:
+        '200':
+          description: Lista de vehículos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vehicle'
+    post:
+      summary: Registrar la entrada de un vehículo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vehicle'
+      responses:
+        '200':
+          description: Vehículo registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+  /vehicles/{license_plate}:
+    get:
+      summary: Obtener vehículo por placa
+      parameters:
+        - in: path
+          name: license_plate
+          required: true
+          schema:
+            type: string
+          description: Placa del vehículo
+      responses:
+        '200':
+          description: Información del vehículo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+        '404':
+          description: Vehículo no encontrado
+  /vehicles/checkout:
+    post:
+      summary: Registrar la salida de un vehículo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                license_plate:
+                  type: string
+                  example: "ABC123"
+      responses:
+        '200':
+          description: Vehículo actualizado con el costo de parqueo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+        '404':
+          description: Vehículo no encontrado
+components:
+  schemas:
+    Vehicle:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        license_plate:
+          type: string
+          example: "ABC123"
+        brand:
+          type: string
+          example: "Toyota"
+        vehicle_model:
+          type: string
+          example: "Corolla"
+        color:
+          type: string
+          example: "Red"
+        check_in_time:
+          type: string
+          format: date-time
+          example: "2023-06-16T10:00:00Z"
+        check_out_time:
+          type: string
+          format: date-time
+          example: "2023-06-16T12:00:00Z"
+        cost:
+          type: number
+          format: float
+          example: 10.0

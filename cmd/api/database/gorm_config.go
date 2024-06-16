@@ -3,7 +3,7 @@ package database
 import (
 	"log"
 
-	"github.com/giojimen3z/Parking_gingo/models"
+	"Paking_gingo/cmd/api/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
