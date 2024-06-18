@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: parqueadero-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: parqueadero-api
+  template:
+    metadata:
+      labels:
+        app: parqueadero-api
+    spec:
+      containers:
+        - name: parqueadero-api
+          image: 730335408523.dkr.ecr.us-east-1.amazonaws.com/parqueadero-api:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: GIN_MODE
+              value: "release"

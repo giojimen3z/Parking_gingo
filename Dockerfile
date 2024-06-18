@@ -1,8 +1,8 @@
-# Dockerfile
-FROM golang:1.21.4-alpine
+# Etapa de construcción
+FROM golang:1.21.4-alpine AS builder
 
-# Instalar las dependencias necesarias para CGO
-RUN apk add --no-cache gcc musl-dev
+# Instalar las dependencias necesarias para CGO y cross-compilation
+RUN apk add --no-cache gcc musl-dev linux-headers
 
 WORKDIR /app
 
@@ -14,15 +14,17 @@ RUN go mod download
 # Copia el resto de los archivos
 COPY . .
 
-# Establecer el directorio de trabajo para la compilación
-WORKDIR /app
-
-# Habilitar CGO y construir el ejecutable
+# Habilitar CGO y establecer GOARCH
 ENV CGO_ENABLED=1
+ENV GOOS=linux
+ENV GOARCH=amd64
+
+# Compilar el ejecutable
 RUN go build -o /parqueadero-api main.go
 
-# Exponer el puerto
+# Etapa final
+FROM alpine:latest
+WORKDIR /root/
+COPY --from=builder /parqueadero-api .
 EXPOSE 8080
-
-# Comando para ejecutar el binario
-CMD ["/parqueadero-api"]
+CMD ["./parqueadero-api"]
